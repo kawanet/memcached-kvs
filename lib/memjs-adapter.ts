@@ -9,10 +9,10 @@ import {mKVS} from "../types/memcached-kvs";
 type Client = mKVS.MemjsClient;
 
 export class MemjsAdapter<T extends (string | Buffer)> implements mKVS.KVS<T> {
-    private readonly expires: { expires: number };
+    private readonly expires: { expires?: number } = {};
 
     constructor(protected client: Client, expires: number) {
-        if (expires != null) this.expires = {expires: expires};
+        if (expires != null) this.expires.expires = expires;
     }
 
     get(key: string): Promise<T> {
