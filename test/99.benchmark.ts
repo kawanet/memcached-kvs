@@ -97,7 +97,8 @@ DESCRIBE("REPEAT=" + REPEAT + " " + TESTNAME, () => {
         const namespace = `keyv-memcache:${+new Date}:`;
 
         const memcache = new KeyvMemcache(MEMCACHE_SERVERS);
-        const keyv = new Keyv({store: memcache, ttl: expires, namespace});
+        // expiry TTL in milliseconds.
+        const keyv = new Keyv({store: memcache, ttl: expires * 1000, namespace});
 
         before(() => keyv.get("connection"));
 
