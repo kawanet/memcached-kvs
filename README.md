@@ -44,13 +44,38 @@ See TypeScript declaration
 [memcached-kvs.d.ts](https://github.com/kawanet/memcached-kvs/blob/main/types/memcached-kvs.d.ts)
 for more detail.
 
+## BENCHMARK
+
+`memcached-kvs` does not include a brand new
+[Memcached protocol](https://github.com/memcached/memcached/wiki/Protocols)
+client with itself.
+It provides `Promsie` interface for other existing Memcached client modules.
+Note that MemJS looks faster than other modules.
+
+| Engine | string | Buffer |
+|---|---|---|
+| this + [Memcached](https://www.npmjs.com/package/memcached) |52,927ms|54,559ms|
+| this + [memcached-lite](https://www.npmjs.com/package/memcached-lite) |51,107ms|51,594ms|
+| this + [MemJS](https://www.npmjs.com/package/memjs) |50,951ms|48,713ms|
+| [KeyV](https://www.npmjs.com/package/keyv) + [Keyv-Memcache](https://github.com/jaredwray/keyv-memcache) |54,090ms|56,972ms|
+
+Above shows milliseconds to perform 50,000 operations of 
+10% `set()`, 80% `get()` and 10% `delete()` methods
+toward a memcached server running in `localhost`.
+
+```sh
+git clone https://github.com/kawanet/memcached-kvs.git
+cd memcached-kvs
+npm install
+./node_modules/.bin/tsc -p .
+docker run -d -p 11211:11211 --name memcached memcached
+MEMCACHE_SERVERS=localhost:11211 REPEAT=1000 test/99.benchmark.js
+```
+
 ## LINKS
 
 - https://github.com/kawanet/memcached-kvs
 - https://www.npmjs.com/package/memcached-kvs
-- https://www.npmjs.com/package/memcached
-- https://www.npmjs.com/package/memcached-lite
-- https://www.npmjs.com/package/memjs
 
 ## MIT LICENSE
 
