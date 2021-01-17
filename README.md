@@ -3,7 +3,7 @@
 [![Node.js CI](https://github.com/kawanet/memcached-kvs/workflows/Node.js%20CI/badge.svg?branch=main)](https://github.com/kawanet/memcached-kvs/actions/)
 [![npm version](https://badge.fury.io/js/memcached-kvs.svg)](https://www.npmjs.com/package/memcached-kvs)
 
-Promise based interface for memcached key-value storage.
+Promise based key-value storage interface for memcached.
 
 ## SYNOPSIS
 
@@ -49,17 +49,16 @@ for more detail.
 `memcached-kvs` does not include a brand new
 [Memcached protocol](https://github.com/memcached/memcached/wiki/Protocols)
 client with itself.
-It provides `Promsie` interface for other existing Memcached client modules.
-Note that MemJS looks faster than other modules.
+It provides `Promise` interface for other existing Memcached client modules as above.
 
-| Engine | string | Buffer |
-|---|---|---|
-| this + [Memcached](https://www.npmjs.com/package/memcached) |52,927ms|54,559ms|
-| this + [memcached-lite](https://www.npmjs.com/package/memcached-lite) |51,107ms|51,594ms|
-| this + [MemJS](https://www.npmjs.com/package/memjs) |50,951ms|48,713ms|
-| [KeyV](https://www.npmjs.com/package/keyv) + [Keyv-Memcache](https://github.com/jaredwray/keyv-memcache) |54,090ms|56,972ms|
+|Interface|Backend|string 1KB|string 100KB|Buffer 1KB|Buffer 100KB|
+|---|---|---|---|---|---|
+| memcached-kvs | [Memcached](https://www.npmjs.com/package/memcached) |7,595ms|22,361ms|7,700ms|22,340ms|
+| memcached-kvs | [memcached-lite](https://www.npmjs.com/package/memcached-lite) |7,460ms|21,408ms|7,515ms|21,123ms|
+| memcached-kvs | [MemJS](https://www.npmjs.com/package/memjs) |7,486ms|21,057ms|7,373ms|21,105ms|
+| [KeyV](https://www.npmjs.com/package/keyv) | [Keyv-Memcache](https://github.com/jaredwray/keyv-memcache) |7,556ms|21,720ms|7,898ms|27,382ms|
 
-Above shows milliseconds to perform 50,000 operations of 
+Above shows milliseconds to perform 10,000 operations of
 10% `set()`, 80% `get()` and 10% `delete()` methods
 toward a memcached server running in `localhost`.
 
@@ -72,10 +71,11 @@ docker run -d -p 11211:11211 --name memcached memcached
 MEMCACHE_SERVERS=localhost:11211 REPEAT=1000 test/99.benchmark.js
 ```
 
-## LINKS
+## SEE ALSO
 
 - https://github.com/kawanet/memcached-kvs
 - https://www.npmjs.com/package/memcached-kvs
+- https://www.npmjs.com/package/key-value-compress
 
 ## MIT LICENSE
 

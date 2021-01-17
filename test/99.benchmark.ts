@@ -38,8 +38,10 @@ DESCRIBE("REPEAT=" + REPEAT + " " + TESTNAME, () => {
 
         before(() => new Promise(resolve => memcached.get("connection", resolve)));
 
-        it("text", textTest(textKVS({memcached, expires, namespace})));
-        it("Buffer", bufferTest(bufferKVS({memcached, expires, namespace})));
+        it("string 1KB", textTest(1000, textKVS({memcached, expires, namespace})));
+        it("string 100KB", textTest(100000, textKVS({memcached, expires, namespace})));
+        it("Buffer 1KB", bufferTest(1000, bufferKVS({memcached, expires, namespace})));
+        it("Buffer 100KB", bufferTest(100000, bufferKVS({memcached, expires, namespace})));
 
         after(async () => {
             memcached.end();
@@ -58,8 +60,10 @@ DESCRIBE("REPEAT=" + REPEAT + " " + TESTNAME, () => {
 
         before(() => new Promise(resolve => memcached.get("connection", resolve)));
 
-        it("text", textTest(textKVS({memcached, expires, namespace})));
-        it("Buffer", bufferTest(bufferKVS({memcached, expires, namespace})));
+        it("string 1KB", textTest(1000, textKVS({memcached, expires, namespace})));
+        it("string 100KB", textTest(100000, textKVS({memcached, expires, namespace})));
+        it("Buffer 1KB", bufferTest(1000, bufferKVS({memcached, expires, namespace})));
+        it("Buffer 100KB", bufferTest(100000, bufferKVS({memcached, expires, namespace})));
 
         after(async () => {
             memcached.end();
@@ -78,8 +82,10 @@ DESCRIBE("REPEAT=" + REPEAT + " " + TESTNAME, () => {
 
         before(() => new Promise(resolve => memjs.get("connection", resolve)));
 
-        it("text", textTest(textKVS({memjs, expires, namespace})));
-        it("Buffer", bufferTest(bufferKVS({memjs, expires, namespace})));
+        it("string 1KB", textTest(1000, textKVS({memjs, expires, namespace})));
+        it("string 100KB", textTest(100000, textKVS({memjs, expires, namespace})));
+        it("Buffer 1KB", bufferTest(1000, bufferKVS({memjs, expires, namespace})));
+        it("Buffer 100KB", bufferTest(100000, bufferKVS({memjs, expires, namespace})));
 
         after(async () => {
             memjs.close();
@@ -102,8 +108,10 @@ DESCRIBE("REPEAT=" + REPEAT + " " + TESTNAME, () => {
 
         before(() => keyv.get("connection"));
 
-        it("text", textTest(keyv));
-        it("Buffer", bufferTest(keyv));
+        it("string 1KB", textTest(1000, keyv));
+        it("string 100KB", textTest(100000, keyv));
+        it("Buffer 1KB", bufferTest(1000, keyv));
+        it("Buffer 100KB", bufferTest(100000, keyv));
 
         after(async () => {
             (memcache as any).client.close();
@@ -116,27 +124,23 @@ DESCRIBE("REPEAT=" + REPEAT + " " + TESTNAME, () => {
  * run (5 * 10 * REPEAT) operations with text KVS
  */
 
-function textTest(kvs: mKVS.KVS<string>) {
+function textTest(size: number, kvs: mKVS.KVS<string>) {
     return async function (this: mocha.Context) {
         this.timeout(1000 * REPEAT);
-        const sizes = [10, 100, 1000, 10000, 100000];
+        const value = "a".repeat(size);
+        const key = "string:" + size;
 
-        for (const size of sizes) {
-            const value = "a".repeat(size);
-            const key = "text:" + size;
+        for (let repeat = 0; repeat < REPEAT; repeat++) {
+            await kvs.set(key, value);
 
-            for (let repeat = 0; repeat < REPEAT; repeat++) {
-                await kvs.set(key, value);
-
-                for (let i = 0; i < 8; i++) {
-                    const buffer = await kvs.get(key);
-                    assert.equal(typeof buffer, "string");
-                    assert.equal(buffer[0], "a");
-                    assert.equal(buffer.length, size);
-                }
-
-                await kvs.delete(key);
+            for (let i = 0; i < 8; i++) {
+                const buffer = await kvs.get(key);
+                assert.equal(typeof buffer, "string");
+                assert.equal(buffer[0], "a");
+                assert.equal(buffer.length, size);
             }
+
+            await kvs.delete(key);
         }
     };
 }
@@ -145,28 +149,24 @@ function textTest(kvs: mKVS.KVS<string>) {
  * run (5 * 10 * REPEAT) operations with Buffer KVS
  */
 
-function bufferTest(kvs: mKVS.KVS<Buffer>) {
+function bufferTest(size: number, kvs: mKVS.KVS<Buffer>) {
     return async function (this: mocha.Context) {
         this.timeout(1000 * REPEAT);
-        const sizes = [10, 100, 1000, 10000, 100000];
+        const value = Buffer.alloc(size);
+        value.fill(97);
+        const key = "buffer:" + size;
 
-        for (const size of sizes) {
-            const value = Buffer.alloc(size);
-            value.fill(97);
-            const key = "buffer:" + size;
+        for (let repeat = 0; repeat < REPEAT; repeat++) {
+            await kvs.set(key, value);
 
-            for (let repeat = 0; repeat < REPEAT; repeat++) {
-                await kvs.set(key, value);
-
-                for (let i = 0; i < 8; i++) {
-                    const buffer = await kvs.get(key);
-                    assert.equal(Buffer.isBuffer(buffer), true);
-                    assert.equal(buffer[0], 97);
-                    assert.equal(buffer.length, size);
-                }
-
-                await kvs.delete(key);
+            for (let i = 0; i < 8; i++) {
+                const buffer = await kvs.get(key);
+                assert.equal(Buffer.isBuffer(buffer), true);
+                assert.equal(buffer[0], 97);
+                assert.equal(buffer.length, size);
             }
+
+            await kvs.delete(key);
         }
     };
 }
