@@ -31,7 +31,7 @@ DESCRIBE("REPEAT=" + REPEAT + " " + TESTNAME, () => {
      * https://www.npmjs.com/package/memcached
      */
 
-    describe("memcached", () => {
+    describe("memcached " + require("memcached/package.json").version, () => {
         const Memcached = require("memcached");
         const memcached = new Memcached(MEMCACHE_SERVERS);
         const namespace = `memcached:${+new Date}:`;
@@ -53,7 +53,7 @@ DESCRIBE("REPEAT=" + REPEAT + " " + TESTNAME, () => {
      * https://www.npmjs.com/package/memcached-lite
      */
 
-    describe("memcached-lite", () => {
+    describe("memcached-lite " + require("memcached-lite/package.json").version, () => {
         const Memcached = require("memcached-lite");
         const memcached = new Memcached(MEMCACHE_SERVERS);
         const namespace = `memcached-lite:${+new Date}:`;
@@ -75,7 +75,7 @@ DESCRIBE("REPEAT=" + REPEAT + " " + TESTNAME, () => {
      * https://www.npmjs.com/package/memjs
      */
 
-    describe("MemJS", () => {
+    describe("MemJS " + require("memjs/package.json").version, () => {
         const {Client} = require("memjs");
         const memjs = Client.create(MEMCACHE_SERVERS);
         const namespace = `MemJS:${+new Date}:`;
@@ -97,7 +97,7 @@ DESCRIBE("REPEAT=" + REPEAT + " " + TESTNAME, () => {
      * https://www.npmjs.com/package/keyv-memcache
      */
 
-    describe("keyv-memcache", () => {
+    describe("keyv-memcache " + require("keyv-memcache/package.json").version, () => {
         const Keyv = require("keyv");
         const KeyvMemcache = require("keyv-memcache");
         const namespace = `keyv-memcache:${+new Date}:`;

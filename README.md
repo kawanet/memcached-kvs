@@ -49,18 +49,19 @@ for more detail.
 `memcached-kvs` does not include a brand new
 [Memcached protocol](https://github.com/memcached/memcached/wiki/Protocols)
 client with itself.
-It provides `Promise` interface for other existing Memcached client modules as above.
+It provides a consistent `Promise` based interface for other existing Memcached client modules as above.
 
-|Interface|Backend|string 1KB|string 100KB|Buffer 1KB|Buffer 100KB|
-|---|---|---|---|---|---|
-| memcached-kvs | [Memcached](https://www.npmjs.com/package/memcached) |7,595ms|22,361ms|7,700ms|22,340ms|
-| memcached-kvs | [memcached-lite](https://www.npmjs.com/package/memcached-lite) |7,460ms|21,408ms|7,515ms|21,123ms|
-| memcached-kvs | [MemJS](https://www.npmjs.com/package/memjs) |7,486ms|21,057ms|7,373ms|21,105ms|
-| [KeyV](https://www.npmjs.com/package/keyv) | [Keyv-Memcache](https://github.com/jaredwray/keyv-memcache) |7,556ms|21,720ms|7,898ms|27,382ms|
+|Interface|Backend|Version|string 1KB|string 100KB|Buffer 1KB|Buffer 100KB|
+|---|---|---|---|---|---|---|
+| memcached-ksv | [Memcached](https://www.npmjs.com/package/memcached) | 2.2.2 |763ms|2,164ms|817ms|2,199ms|
+| memcached-ksv | [memcached-lite](https://www.npmjs.com/package/memcached-lite) | 1.0.4 |823ms|2,206ms|811ms|2,170ms|
+| memcached-ksv | [MemJS](https://www.npmjs.com/package/memjs) | 1.3.0 |743ms|2,158ms|737ms|2,088ms|
+| [KeyV](https://www.npmjs.com/package/keyv) | [Keyv-Memcache](https://github.com/jaredwray/keyv-memcache) | 1.0.2 |747ms|2,201ms|739ms|2,660ms|
 
-Above shows milliseconds to perform 10,000 operations of
+Above shows median milliseconds to perform 1000 operations of
 10% `set()`, 80% `get()` and 10% `delete()` methods
-toward a memcached server running in `localhost`.
+toward a memcached server running in `localhost`,
+macOS 10.15.7 with Intel Core i7 3.2GHz.
 
 ```sh
 git clone https://github.com/kawanet/memcached-kvs.git
@@ -68,7 +69,7 @@ cd memcached-kvs
 npm install
 ./node_modules/.bin/tsc -p .
 docker run -d -p 11211:11211 --name memcached memcached
-MEMCACHE_SERVERS=localhost:11211 REPEAT=1000 test/99.benchmark.js
+MEMCACHE_SERVERS=localhost:11211 REPEAT=100 ./node_modules/.bin/mocha test/99.benchmark.js
 ```
 
 ## SEE ALSO
