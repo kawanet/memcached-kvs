@@ -1,7 +1,7 @@
 {
   "name": "memcached-kvs",
   "description": "Promise based key-value storage interface for memcached.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Yusuke Kawasaki <u-suke@kawa.net>",
   "bugs": {
     "url": "https://github.com/kawanet/memcached-kvs/issues"

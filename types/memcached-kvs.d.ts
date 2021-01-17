@@ -4,7 +4,7 @@
 
 export function textKVS(options: mKVS.Options): mKVS.KVS<string>;
 
-export function bufferKVS(options: mKVS.Options): mKVS.KVS<string>;
+export function bufferKVS(options: mKVS.Options): mKVS.KVS<Buffer>;
 
 declare namespace mKVS {
     /**
